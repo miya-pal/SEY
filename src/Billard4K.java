@@ -6,10 +6,16 @@ import java.awt.Image;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+
 import java.io.*;
+import java.net.URISyntaxException;
+import java.net.URI;
+
 import javax.sound.sampled.*;//音ならす用
+
 
 //import sun.security.provider.JavaKeyStore.CaseExactJKS;
  
@@ -445,20 +451,6 @@ public class Billard4K extends JPanel implements Runnable, MouseListener, MouseM
                             	}
                         	}
                         }
-<<<<<<< HEAD
-                      	Desktop desktop = Desktop.getDesktop();
-                        //String uriString = "http://www.google.co.jp";
-                        /*try {
-                        URI uri = new URI(uriString);
-                        desktop.browse(uri);
-                        } catch (URISyntaxException e) {
-                        e.printStackTrace();
-                        } catch (IOException e) {
-                        e.printStackTrace();
-                        }*/
-                        
-=======
->>>>>>> origin/master
                         setSound(pocket1);
                     }
                 }
