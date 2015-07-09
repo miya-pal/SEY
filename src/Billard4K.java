@@ -94,6 +94,7 @@ public class Billard4K extends JPanel implements Runnable, MouseListener, MouseM
     String bill1 = "sound/billiard-ball1.wav";
     String break1 = "sound/billiard-ball1.wav";
     String pocket1 = "sound/billiard-pocket1.wav";
+    String shot1 = "sound/billiard-shot1.wav";
     
     public Billard4K() {
         super();
@@ -428,6 +429,8 @@ public class Billard4K extends JPanel implements Runnable, MouseListener, MouseM
                         e.printStackTrace();
                         }*/
                         
+                        setSound(pocket1);
+                        
                         
                     }
                 }
@@ -727,6 +730,8 @@ public class Billard4K extends JPanel implements Runnable, MouseListener, MouseM
                 vx[0] = strength * dXNormalized;
                 vy[0] = strength * dYNormalized;
             }
+            
+            setSound(shot1);
             
             //以下追記
             clicktimes++;
