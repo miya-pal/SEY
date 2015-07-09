@@ -1,5 +1,6 @@
 import java.awt.Canvas;
 import java.awt.Color;
+import java.awt.Desktop;
 import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Graphics;
@@ -11,12 +12,14 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.Arrays;
- 
+
 import javax.swing.JApplet;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-//Download by http://www.bvbsoft.com
+import java.net.URI;
  
 public class Billard4K extends JPanel implements Runnable, MouseListener, MouseMotionListener {
    
@@ -77,7 +80,7 @@ public class Billard4K extends JPanel implements Runnable, MouseListener, MouseM
     									 {0.5f, 0.0f, 0.0f},
     									 {0.0f, 0.0f, 0.0f},
     									 {1.0f, 1.0f, 0.5f}};
-    boolean order = true;//ボールを落とす順番を指定するか
+    boolean order = false;//ボールを落とす順番を指定するか
     int current = 0;//ボールを落とした順番
     int clicktimes = 0;//ボールを打った回数
     
@@ -386,6 +389,16 @@ public class Billard4K extends JPanel implements Runnable, MouseListener, MouseM
                             		state = FINISHING;
                             	}
                         	}
+                        }
+                      	Desktop desktop = Desktop.getDesktop();
+                        String uriString = "http://www.google.co.jp";
+                        try {
+                        URI uri = new URI(uriString);
+                        desktop.browse(uri);
+                        } catch (URISyntaxException e) {
+                        e.printStackTrace();
+                        } catch (IOException e) {
+                        e.printStackTrace();
                         }
                         
                         
@@ -716,5 +729,4 @@ public class Billard4K extends JPanel implements Runnable, MouseListener, MouseM
     public static void main(String[] args) {
         new Billard4K();
     }
-
 }
