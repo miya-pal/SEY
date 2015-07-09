@@ -275,10 +275,6 @@ public class Billard4K extends JPanel implements Runnable, MouseListener, MouseM
                 g.fillOval((int)(holesX[iX]-radio), (int)(holesY[iY]-radio), (int)(2*radio), (int)(2*radio));
             }
         }      
-       
-        g.setColor(Color.YELLOW);//右下サイト名
-        g.setFont(new Font("Courier", Font.PLAIN, 11));
-        g.drawString("http://es.geocities.com/luisja80", this.getWidth()-250, this.getHeight()-10);
     }
     
     public void setSound(String audioname){
