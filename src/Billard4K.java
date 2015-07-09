@@ -6,12 +6,8 @@ import java.awt.Image;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.io.IOException;
-import java.net.URISyntaxException;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import java.net.URI;
-
 import java.io.*;
 import javax.sound.sampled.*;//音ならす用
 
@@ -93,7 +89,7 @@ public class Billard4K extends JPanel implements Runnable, MouseListener, MouseM
     DataLine.Info info = null;
     Clip line = null;
     File audioFile = null;
-    String startsound = "src/welcome.wav";
+    String startsound = "sound/welcome.wav";
     String bill1 = "sound/billiard-ball1.wav";
     String break1 = "sound/billiard-ball1.wav";
     String pocket1 = "sound/billiard-pocket1.wav";
@@ -146,7 +142,7 @@ public class Billard4K extends JPanel implements Runnable, MouseListener, MouseM
     public void initTable() {
        
         //hR = 16;//デフォルト
-    	hR = 32;
+    	hR = 22;
        
         tableX = new double[] {
           40,
@@ -271,13 +267,20 @@ public class Billard4K extends JPanel implements Runnable, MouseListener, MouseM
         g.fillOval((int)(1.0 *(holesX[2]-holesX[0]) / 3.0)-2, (int)((holesY[1]+holesY[0])/2)-2, 4, 4);
         g.drawArc((int)(1.0 *(holesX[2]-holesX[0]) / 3.0)-20, (int)((holesY[1]+holesY[0])/2)-20, 40, 40, 90, 180);
        
-        g.setColor(Color.BLACK);//穴
+        g.setColor(Color.DARK_GRAY);//穴
         double radio = hR-2;
         for (int iX = 0; iX<3; ++iX) {
             for (int iY = 0; iY<2; ++iY) {
                 g.fillOval((int)(holesX[iX]-radio), (int)(holesY[iY]-radio), (int)(2*radio), (int)(2*radio));
             }
-        }      
+        }
+        
+        g.setColor(Color.BLACK);//穴
+        for (int iX = 0; iX<3; ++iX) {
+            for (int iY = 0; iY<2; ++iY) {
+                g.fillOval((int)(holesX[iX]-radio), (int)(holesY[iY]-radio), (int)(2*radio-3), (int)(2*radio-3));
+            }
+        }
     }
     
     public void setSound(String audioname){
@@ -424,7 +427,7 @@ public class Billard4K extends JPanel implements Runnable, MouseListener, MouseM
                         	}
                         }
                       	Desktop desktop = Desktop.getDesktop();
-                        String uriString = "http://www.google.co.jp";
+                        //String uriString = "http://www.google.co.jp";
                         /*try {
                         URI uri = new URI(uriString);
                         desktop.browse(uri);
@@ -759,7 +762,7 @@ public class Billard4K extends JPanel implements Runnable, MouseListener, MouseM
             
             //以下追記
             clicktimes++;
-            System.out.println("clicked");
+            //System.out.println("clicked");
             
         }
        
