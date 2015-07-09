@@ -91,7 +91,7 @@ public class Billard4K extends JPanel implements Runnable, MouseListener, MouseM
     boolean compmessage = false;
     
     //動画関連
-    String[] uriString = new String[]{"https://www.google.com.au/webhp?hl=ja",
+    String[] uriString = new String[]{"https://drive.google.com/file/d/0B2qGSJvCoOjhYnNqektMV2lKUjA/view?usp=sharing",
     "http://www.amazon.co.jp/","http://www.nifty.com/","https://twitter.com/",
     "https://www.facebook.com","https://scholar.google.co.jp/","http://ci.nii.ac.jp/",
     "https://instagram.com/","https://www.whatsapp.com/?l=ja"
