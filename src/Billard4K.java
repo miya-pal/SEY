@@ -83,6 +83,7 @@ public class Billard4K extends JPanel implements Runnable, MouseListener, MouseM
     int RETRYNUM = 3;//白いボールの数 初期値
     
     boolean gameover = false;//ゲームオーバー(タイトルに戻る)
+    boolean boomessage = false;//ゲームオーバーしたら
     
     //サウンド一式
     AudioFormat format = null;
@@ -336,6 +337,7 @@ public class Billard4K extends JPanel implements Runnable, MouseListener, MouseM
                        
                         //全部落としてクリアしたか、ゲームオーバー(分岐したい)
                         if (nBallsOn==0 || gameover) {
+                        	 if(gameover) boomessage = true;
                             state = FINISHING;
                             gameover = false;
                         }
@@ -601,13 +603,21 @@ public class Billard4K extends JPanel implements Runnable, MouseListener, MouseM
             gBackBuffer.drawString("まささんソースコード見ちゃダメですよ(癶u癶)??", mX-128, mY+52);
            
             if (((System.currentTimeMillis()/1000)&1)==0) {
-            gBackBuffer.setColor(Color.YELLOW);
+            	gBackBuffer.setColor(Color.YELLOW);
             }
             else {
                 gBackBuffer.setColor(Color.CYAN);
             }
             gBackBuffer.drawString("Click to start", mX, mY);
             gBackBuffer.drawString("まささんソースコード見ちゃダメですよ(癶u癶)??", mX-130, mY+52);
+            
+            if (((System.currentTimeMillis()/1000)&1)==0) {
+            	if(boomessage){
+            		gBackBuffer.setColor(Color.RED);
+            		gBackBuffer.setFont(new Font("MSゴシック", Font.BOLD, 30));
+            		gBackBuffer.drawString("まささん Game Over♥ (⌒◯⌒)/", mX-140, mY-145);	
+            	}
+            }
             
             //スコアなどのカウントを初期値に戻す
             retrynum = RETRYNUM;
