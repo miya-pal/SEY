@@ -699,4 +699,10 @@ public class Billard4K extends JPanel implements Runnable, MouseListener, MouseM
     public static void main(String[] args) {
         new Billard4K();
     }
+<<<<<<< Updated upstream
 }
+=======
+}
+
+//ギット教えてくれてありがとう！！
+>>>>>>> Stashed changes
