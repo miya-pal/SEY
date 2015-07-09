@@ -200,10 +200,25 @@ public class Billard4K extends JPanel implements Runnable, MouseListener, MouseM
    
     public void setBalls() {
         int ball=1;
+        int line = 2;
         nBallsOn = nballs - 1;
         final double mul = Math.sqrt(3.5);
-        for (int col=0; col<3; ++col) {//col=何列並べるか
+        for (int col=0; col<line; ++col) {//col=何列並べるか
             double xN = this.getWidth()*2.0/3.0+col* mul *r;
+            double yN = this.getHeight()/2-col*r;
+            for (int row=0; row<=col; ++row) {
+                x[ball] = xN;
+                y[ball] = yN;
+                vx[ball] = 0;
+                vy[ball] = 0;
+                onTable[ball] = true;
+               
+                yN += 2*r;
+                ++ball;
+            }
+        }
+        for (int col=0; col<line+1; ++col) {
+            double xN = this.getWidth()*2.0/3.0+(line*2-col)* mul *r;
             double yN = this.getHeight()/2-col*r;
             for (int row=0; row<=col; ++row) {
                 x[ball] = xN;
@@ -542,6 +557,7 @@ public class Billard4K extends JPanel implements Runnable, MouseListener, MouseM
                        
             gBackBuffer.setColor(Color.BLACK);
             gBackBuffer.drawString("Click to start", mX+2, mY+2);
+            gBackBuffer.drawString("まささんソースコード見ちゃダメですよ(癶u癶)??", mX-128, mY+52);
            
             if (((System.currentTimeMillis()/1000)&1)==0) {
             gBackBuffer.setColor(Color.YELLOW);
@@ -550,6 +566,7 @@ public class Billard4K extends JPanel implements Runnable, MouseListener, MouseM
                 gBackBuffer.setColor(Color.CYAN);
             }
             gBackBuffer.drawString("Click to start", mX, mY);
+            gBackBuffer.drawString("まささんソースコード見ちゃダメですよ(癶u癶)??", mX-130, mY+52);
             
             //追記
             retrynum = RETRYNUM;
@@ -699,10 +716,5 @@ public class Billard4K extends JPanel implements Runnable, MouseListener, MouseM
     public static void main(String[] args) {
         new Billard4K();
     }
-<<<<<<< Updated upstream
-}
-=======
-}
 
-//ギット教えてくれてありがとう！！
->>>>>>> Stashed changes
+}
