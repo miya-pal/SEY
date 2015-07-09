@@ -14,6 +14,8 @@ import java.net.URI;
 
 import java.io.*;
 import javax.sound.sampled.*;//音ならす用
+
+//import sun.security.provider.JavaKeyStore.CaseExactJKS;
  
 public class Billard4K extends JPanel implements Runnable, MouseListener, MouseMotionListener {
    
@@ -84,6 +86,7 @@ public class Billard4K extends JPanel implements Runnable, MouseListener, MouseM
     
     boolean gameover = false;//ゲームオーバー(タイトルに戻る)
     boolean boomessage = false;//ゲームオーバーしたら
+    boolean compmessage = false;
     
     //サウンド一式
     AudioFormat format = null;
@@ -169,7 +172,7 @@ public class Billard4K extends JPanel implements Runnable, MouseListener, MouseM
    
    
     public void initBalls() {
-        nballs = 16;//ボール半径？
+        nballs = 10;//ボール半径？
         x = new double[nballs];//現在地
         y = new double[nballs];
         vx = new double[nballs];//動く量
@@ -218,7 +221,7 @@ public class Billard4K extends JPanel implements Runnable, MouseListener, MouseM
    
     public void setBalls() {
         int ball=1;
-        int line = 2;
+        int line = nballs/5;
         nBallsOn = nballs - 1;
         final double mul = Math.sqrt(3.5);
         for (int col=0; col<line; ++col) {//col=何列並べるか
@@ -333,10 +336,16 @@ public class Billard4K extends JPanel implements Runnable, MouseListener, MouseM
                         }
                        
                         //全部落としてクリアしたか、ゲームオーバー(分岐したい)
-                        if (nBallsOn==0 || gameover) {
-                        	 if(gameover) boomessage = true;
-                            state = FINISHING;
-                            gameover = false;
+                        if (gameover) {
+                        	state = FINISHING;
+                        	compmessage = false;
+                        	boomessage = true;
+                        	gameover = false;
+                        }
+                        if (nBallsOn==0) {
+                        	state = FINISHING;
+                        	boomessage = false;
+                        	compmessage = true;
                         }
                        
                         break;
@@ -616,7 +625,26 @@ public class Billard4K extends JPanel implements Runnable, MouseListener, MouseM
             		gBackBuffer.setFont(new Font("MSゴシック", Font.BOLD, 30));
             		gBackBuffer.drawString("まささん Game Over♥ (⌒◯⌒)/", mX-140, mY-145);	
             	}
+            	/*if (compmessage){
+            		gBackBuffer.setColor(Color.PINK);
+            		gBackBuffer.setFont(new Font("MSゴシック", Font.BOLD, 20));
+            		gBackBuffer.drawString("まささん Game Completeですよ♥ (♥v♥)/", mX-140, mY-150);
+            		gBackBuffer.setColor(Color.PINK);
+            		gBackBuffer.setFont(new Font("MSゴシック", Font.BOLD, 30));
+            		gBackBuffer.drawString("??One More Time??(♥v♥)", mX-120, mY-50);
+            		
+            	}*/
             }
+            
+            if (compmessage){
+        		gBackBuffer.setColor(Color.PINK);
+        		gBackBuffer.setFont(new Font("MSゴシック", Font.BOLD, 20));
+        		gBackBuffer.drawString("まささん Game Completeですよ♥ (♥v♥)/", mX-120, mY-150);
+        		gBackBuffer.setColor(Color.PINK);
+        		gBackBuffer.setFont(new Font("MSゴシック", Font.BOLD, 30));
+        		gBackBuffer.drawString("??One More Time??(♥v♥)", mX-115, mY-50);
+        		
+        	}
             
             //スコアなどのカウントを初期値に戻す
             retrynum = RETRYNUM;
