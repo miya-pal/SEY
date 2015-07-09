@@ -90,7 +90,9 @@ public class Billard4K extends JPanel implements Runnable, MouseListener, MouseM
     Clip line = null;
     File audioFile = null;
     String startsound = "src/welcome.wav";
-    //String bill1 = "/Users/miyagiyuri/Sydney/javagames/billiard sounds/billiard-ball1.mp3";
+    String bill1 = "sound/billiard-ball1.wav";
+    String break1 = "sound/billiard-ball1.wav";
+    String pocket1 = "sound/billiard-pocket1.wav";
     
     public Billard4K() {
         super();
@@ -129,19 +131,7 @@ public class Billard4K extends JPanel implements Runnable, MouseListener, MouseM
         //サウンドファイルを読み込んで再生する
         // AIFF-C、AIFF、AU、SND、WAV　の各形式が利用可能
         
-
-        try{
-            System.out.println("start sound");
-            audioFile = new File(startsound);
-            format = AudioSystem.getAudioFileFormat(audioFile).getFormat();
-            info = new DataLine.Info(Clip.class, format);
-            line = (Clip)AudioSystem.getLine(info);
-            line.open(AudioSystem.getAudioInputStream(audioFile));
-            line.start();
-        }
-        catch(Exception e){
-            e.printStackTrace();
-        }
+        setSound(startsound);
         //音のテストここまで
         
         start();
@@ -287,6 +277,20 @@ public class Billard4K extends JPanel implements Runnable, MouseListener, MouseM
         g.setColor(Color.YELLOW);//右下サイト名
         g.setFont(new Font("Courier", Font.PLAIN, 11));
         g.drawString("http://es.geocities.com/luisja80", this.getWidth()-250, this.getHeight()-10);
+    }
+    
+    public void setSound(String audioname){
+    	try{
+    	audioFile = new File(audioname);
+        format = AudioSystem.getAudioFileFormat(audioFile).getFormat();
+        info = new DataLine.Info(Clip.class, format);
+        line = (Clip)AudioSystem.getLine(info);
+        line.open(AudioSystem.getAudioInputStream(audioFile));
+        line.start();
+    	 }
+        catch(Exception e){
+            e.printStackTrace();
+        }
     }
    
    
@@ -494,8 +498,11 @@ public class Billard4K extends JPanel implements Runnable, MouseListener, MouseM
                    
                     vx[ball2] = nextVx[ball2];
                     vy[ball2] = nextVy[ball2];
+                    //音だよん〜
+                    setSound(bill1);
+                    
                 }
-            }
+            }   
         }
     }
    
