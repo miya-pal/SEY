@@ -417,8 +417,10 @@ public class Billard4K extends JPanel implements Runnable, MouseListener, MouseM
                         Desktop desktop = Desktop.getDesktop();
                         //動画にとぶよ〜！                     
                         try {
+                        	if(ball!=0){
                             URI uri = new URI(uriString[ball-1]);
                             desktop.browse(uri);
+                        	}
                             } catch (URISyntaxException e) {
                             e.printStackTrace();
                             } catch (IOException e) {
