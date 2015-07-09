@@ -700,5 +700,3 @@ public class Billard4K extends JPanel implements Runnable, MouseListener, MouseM
         new Billard4K();
     }
 }
-
-//aaa
