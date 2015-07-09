@@ -89,7 +89,7 @@ public class Billard4K extends JPanel implements Runnable, MouseListener, MouseM
     DataLine.Info info = null;
     Clip line = null;
     File audioFile = null;
-    String startsound = "/Applications/Microsoft Office 2008/Office/EntourageCore.framework/Versions/12/Resources/welcome.wav";
+    String startsound = "src/welcome.wav";
     //String bill1 = "/Users/miyagiyuri/Sydney/javagames/billiard sounds/billiard-ball1.mp3";
     
     public Billard4K() {
