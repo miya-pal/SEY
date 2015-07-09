@@ -84,6 +84,13 @@ public class Billard4K extends JPanel implements Runnable, MouseListener, MouseM
     boolean boomessage = false;//ゲームオーバーしたら
     boolean compmessage = false;
     
+    //動画関連
+    String[] uriString = new String[]{"https://www.google.com.au/webhp?hl=ja",
+    "http://www.amazon.co.jp/","http://www.nifty.com/","https://twitter.com/",
+    "https://www.facebook.com","https://scholar.google.co.jp/","http://ci.nii.ac.jp/",
+    "https://instagram.com/","https://www.whatsapp.com/?l=ja"
+    };
+    
     //サウンド一式
     AudioFormat format = null;
     DataLine.Info info = null;
@@ -168,7 +175,7 @@ public class Billard4K extends JPanel implements Runnable, MouseListener, MouseM
    
    
     public void initBalls() {
-        nballs = 10;//ボール半径？
+        nballs = 5;//ボール半径？
         x = new double[nballs];//現在地
         y = new double[nballs];
         vx = new double[nballs];//動く量
@@ -410,6 +417,18 @@ public class Billard4K extends JPanel implements Runnable, MouseListener, MouseM
                         if (ball!=0)--nBallsOn;//ボールの残り数を減らす
                         vx[ball] = 0;//落下したボールは動かない
                         vy[ball] = 0;
+                        Desktop desktop = Desktop.getDesktop();
+                        //動画にとぶよ〜！                     
+                        try {
+                        	if(ball!=0){
+                            URI uri = new URI(uriString[ball-1]);
+                            desktop.browse(uri);
+                        	}
+                            } catch (URISyntaxException e) {
+                            e.printStackTrace();
+                            } catch (IOException e) {
+                            e.printStackTrace();
+                            }
                         
                         if(order){//落とす順番を考慮する場合
                             if(!(ball==current+1) && 0 < ball){//白玉以外が間違った順番で落ちたら
@@ -426,6 +445,7 @@ public class Billard4K extends JPanel implements Runnable, MouseListener, MouseM
                             	}
                         	}
                         }
+<<<<<<< HEAD
                       	Desktop desktop = Desktop.getDesktop();
                         //String uriString = "http://www.google.co.jp";
                         /*try {
@@ -437,9 +457,9 @@ public class Billard4K extends JPanel implements Runnable, MouseListener, MouseM
                         e.printStackTrace();
                         }*/
                         
+=======
+>>>>>>> origin/master
                         setSound(pocket1);
-                        
-                        
                     }
                 }
             }
