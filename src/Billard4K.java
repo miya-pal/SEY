@@ -102,11 +102,11 @@ public class Billard4K extends JPanel implements Runnable, MouseListener, MouseM
     DataLine.Info info = null;
     Clip line = null;
     File audioFile = null;
-    String startsound = "sound/welcome.wav";
-    String bill1 = "sound/billiard-ball1.wav";
-    String break1 = "sound/billiard-ball1.wav";
-    String pocket1 = "sound/billiard-pocket1.wav";
-    String shot1 = "sound/billiard-shot1.wav";
+    String startsound = "welcome.wav";
+    String bill1 = "billiard-ball1.wav";
+    String break1 = "billiard-ball1.wav";
+    String pocket1 = "billiard-pocket1.wav";
+    String shot1 = "billiard-shot1.wav";
     
     boolean breakshot = true;//最初の一発か
     
