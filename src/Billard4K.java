@@ -6,14 +6,18 @@ import java.awt.Image;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.io.IOException;
-import java.net.URISyntaxException;
+
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import java.net.URI;
 
 import java.io.*;
+import java.net.URISyntaxException;
+import java.net.URI;
+
 import javax.sound.sampled.*;//音ならす用
+
+
+//import sun.security.provider.JavaKeyStore.CaseExactJKS;
  
 public class Billard4K extends JPanel implements Runnable, MouseListener, MouseMotionListener {
    
@@ -84,17 +88,27 @@ public class Billard4K extends JPanel implements Runnable, MouseListener, MouseM
     
     boolean gameover = false;//ゲームオーバー(タイトルに戻る)
     boolean boomessage = false;//ゲームオーバーしたら
+    boolean compmessage = false;
+    
+    //動画関連
+    String[] uriString = new String[]{"https://drive.google.com/file/d/0B2qGSJvCoOjhYnNqektMV2lKUjA/view?usp=sharing",
+    "http://www.amazon.co.jp/","http://www.nifty.com/","https://twitter.com/",
+    "https://www.facebook.com","https://scholar.google.co.jp/","http://ci.nii.ac.jp/",
+    "https://instagram.com/","https://www.whatsapp.com/?l=ja"
+    };
     
     //サウンド一式
     AudioFormat format = null;
     DataLine.Info info = null;
     Clip line = null;
     File audioFile = null;
-    String startsound = "src/welcome.wav";
+    String startsound = "sound/welcome.wav";
     String bill1 = "sound/billiard-ball1.wav";
     String break1 = "sound/billiard-ball1.wav";
     String pocket1 = "sound/billiard-pocket1.wav";
     String shot1 = "sound/billiard-shot1.wav";
+    
+    boolean breakshot = true;//最初の一発か
     
     public Billard4K() {
         super();
@@ -103,7 +117,7 @@ public class Billard4K extends JPanel implements Runnable, MouseListener, MouseM
         //this.setUndecorated(true);
         //this.setVisible(true);
  
-        JFrame f = new JFrame("Billard4K");        
+        JFrame f = new JFrame("Billiard4K");        
         f.add(this);
         f.setBounds(0, 0, 700, 380);
         f.setResizable(false);
@@ -143,7 +157,7 @@ public class Billard4K extends JPanel implements Runnable, MouseListener, MouseM
     public void initTable() {
        
         //hR = 16;//デフォルト
-    	hR = 32;
+    	hR = 22;
        
         tableX = new double[] {
           40,
@@ -169,7 +183,7 @@ public class Billard4K extends JPanel implements Runnable, MouseListener, MouseM
    
    
     public void initBalls() {
-        nballs = 16;//ボール半径？
+        nballs = 10;//ボール半径？//10でナインボールに
         x = new double[nballs];//現在地
         y = new double[nballs];
         vx = new double[nballs];//動く量
@@ -218,7 +232,7 @@ public class Billard4K extends JPanel implements Runnable, MouseListener, MouseM
    
     public void setBalls() {
         int ball=1;
-        int line = 2;
+        int line = nballs/5;
         nBallsOn = nballs - 1;
         final double mul = Math.sqrt(3.5);
         for (int col=0; col<line; ++col) {//col=何列並べるか
@@ -268,17 +282,20 @@ public class Billard4K extends JPanel implements Runnable, MouseListener, MouseM
         g.fillOval((int)(1.0 *(holesX[2]-holesX[0]) / 3.0)-2, (int)((holesY[1]+holesY[0])/2)-2, 4, 4);
         g.drawArc((int)(1.0 *(holesX[2]-holesX[0]) / 3.0)-20, (int)((holesY[1]+holesY[0])/2)-20, 40, 40, 90, 180);
        
-        g.setColor(Color.BLACK);//穴
+        g.setColor(Color.DARK_GRAY);//穴
         double radio = hR-2;
         for (int iX = 0; iX<3; ++iX) {
             for (int iY = 0; iY<2; ++iY) {
                 g.fillOval((int)(holesX[iX]-radio), (int)(holesY[iY]-radio), (int)(2*radio), (int)(2*radio));
             }
-        }      
-       
-        g.setColor(Color.YELLOW);//右下サイト名
-        g.setFont(new Font("Courier", Font.PLAIN, 11));
-        g.drawString("http://es.geocities.com/luisja80", this.getWidth()-250, this.getHeight()-10);
+        }
+        
+        g.setColor(Color.BLACK);//穴
+        for (int iX = 0; iX<3; ++iX) {
+            for (int iY = 0; iY<2; ++iY) {
+                g.fillOval((int)(holesX[iX]-radio), (int)(holesY[iY]-radio), (int)(2*radio-3), (int)(2*radio-3));
+            }
+        }
     }
     
     public void setSound(String audioname){
@@ -337,10 +354,16 @@ public class Billard4K extends JPanel implements Runnable, MouseListener, MouseM
                         }
                        
                         //全部落としてクリアしたか、ゲームオーバー(分岐したい)
-                        if (nBallsOn==0 || gameover) {
-                        	 if(gameover) boomessage = true;
-                            state = FINISHING;
-                            gameover = false;
+                        if (gameover) {
+                        	state = FINISHING;
+                        	compmessage = false;
+                        	boomessage = true;
+                        	gameover = false;
+                        }
+                        if (nBallsOn==0) {
+                        	state = FINISHING;
+                        	boomessage = false;
+                        	compmessage = true;
                         }
                        
                         break;
@@ -398,10 +421,24 @@ public class Billard4K extends JPanel implements Runnable, MouseListener, MouseM
             for (int iHX=0; iHX<3; ++iHX) {//すべての穴について
                 for (int iHY=0; iHY<2; ++iHY) {
                     if (Math.hypot(holesX[iHX]-x[ball], holesY[iHY]-y[ball])<hR) {//穴に接触したら
+                    	
+                    	
                         onTable[ball] = false;//落下したフラグ
                         if (ball!=0)--nBallsOn;//ボールの残り数を減らす
                         vx[ball] = 0;//落下したボールは動かない
                         vy[ball] = 0;
+                        Desktop desktop = Desktop.getDesktop();
+                        //動画にとぶよ〜！                     
+                        try {
+                        	if(ball!=0){
+                            URI uri = new URI(uriString[ball-1]);
+                            desktop.browse(uri);
+                        	}
+                            } catch (URISyntaxException e) {
+                            e.printStackTrace();
+                            } catch (IOException e) {
+                            e.printStackTrace();
+                            }
                         
                         if(order){//落とす順番を考慮する場合
                             if(!(ball==current+1) && 0 < ball){//白玉以外が間違った順番で落ちたら
@@ -418,20 +455,7 @@ public class Billard4K extends JPanel implements Runnable, MouseListener, MouseM
                             	}
                         	}
                         }
-                      	Desktop desktop = Desktop.getDesktop();
-                        String uriString = "http://www.google.co.jp";
-                        /*try {
-                        URI uri = new URI(uriString);
-                        desktop.browse(uri);
-                        } catch (URISyntaxException e) {
-                        e.printStackTrace();
-                        } catch (IOException e) {
-                        e.printStackTrace();
-                        }*/
-                        
                         setSound(pocket1);
-                        
-                        
                     }
                 }
             }
@@ -443,8 +467,15 @@ public class Billard4K extends JPanel implements Runnable, MouseListener, MouseM
         for (int ball1=0; ball1<nballs; ++ball1) if (onTable[ball1]){
             for (int ball2=ball1+1; ball2<nballs; ++ball2) if (onTable[ball2]){
                 boolean collision;
-                if(collision = isBallsCollision(ball1,ball2)){
-           
+                if(collision = isBallsCollision(ball1,ball2)){//ボールが衝突してたら
+                	
+                	if(breakshot){//最初の衝突だったら
+                		//billiard-break1.mp3...ブレイク
+                		breakshot=false;
+                	}else{
+                		//billiard-ball1.mp3...球同士が衝突
+                	}
+                	
                     // Adjust position
                     int cont = 0;
                     while (cont <10 && collision){
@@ -585,7 +616,7 @@ public class Billard4K extends JPanel implements Runnable, MouseListener, MouseM
         for (int i=1; i<nballs; i++) if (onTable[i]){
         	gBackBuffer.setColor(new Color(ballcolors[i%9][0], ballcolors[i%9][1], ballcolors[i%9][2]));
             gBackBuffer.fillOval((int)(x[i]-r), (int)(y[i]-r), (int)(r*2), (int)(r*2));
-            gBackBuffer.drawString(String.valueOf(i), (int)(x[i]-r), (int)(y[i]-r));
+            gBackBuffer.drawString(String.valueOf(Math.max((i+1)%10, 1)), (int)(x[i]-r), (int)(y[i]-r));//0716修正
         }
        
         gBackBuffer.setColor(Color.BLACK);
@@ -620,7 +651,26 @@ public class Billard4K extends JPanel implements Runnable, MouseListener, MouseM
             		gBackBuffer.setFont(new Font("MSゴシック", Font.BOLD, 30));
             		gBackBuffer.drawString("まささん Game Over♥ (⌒◯⌒)/", mX-140, mY-145);	
             	}
+            	/*if (compmessage){
+            		gBackBuffer.setColor(Color.PINK);
+            		gBackBuffer.setFont(new Font("MSゴシック", Font.BOLD, 20));
+            		gBackBuffer.drawString("まささん Game Completeですよ♥ (♥v♥)/", mX-140, mY-150);
+            		gBackBuffer.setColor(Color.PINK);
+            		gBackBuffer.setFont(new Font("MSゴシック", Font.BOLD, 30));
+            		gBackBuffer.drawString("??One More Time??(♥v♥)", mX-120, mY-50);
+            		
+            	}*/
             }
+            
+            if (compmessage){
+        		gBackBuffer.setColor(Color.PINK);
+        		gBackBuffer.setFont(new Font("MSゴシック", Font.BOLD, 20));
+        		gBackBuffer.drawString("まささん Game Completeですよ♥ (♥v♥)/", mX-120, mY-150);
+        		gBackBuffer.setColor(Color.PINK);
+        		gBackBuffer.setFont(new Font("MSゴシック", Font.BOLD, 30));
+        		gBackBuffer.drawString("??One More Time??(♥v♥)", mX-115, mY-50);
+        		
+        	}
             
             //スコアなどのカウントを初期値に戻す
             retrynum = RETRYNUM;
@@ -649,9 +699,10 @@ public class Billard4K extends JPanel implements Runnable, MouseListener, MouseM
    
         // Draw path line
         int dot = 0;
-        int nDots = (clicked)
+        double d = Math.hypot(x[0]-mXPost,y[0]-mYPost);//白玉とカーソルの距離
+        int nDots = (clicked)//長さの制限？
             ? (int)(150.0 * (strength / MAX_STRENGTH))
-            : 15;
+            : (int)(1 + Math.max(0.4 * d, 0));//強く打つときほどガイドラインを長くする
         double step = 30;
         double xStep = step * dXNormalized;
         double yStep = step * dYNormalized;        
@@ -661,8 +712,12 @@ public class Billard4K extends JPanel implements Runnable, MouseListener, MouseM
         --actualStep;
         actualStep %= step;
        
-        gBackBuffer.setColor(Color.WHITE);
+        //gBackBuffer.setColor(Color.WHITE);//点線の色を白で固定する場合
+        gBackBuffer.setColor(new Color((float)Math.min(d*0.005f, 1),  (float)Math.min(d*0.005f, 1), 1.0f));//強さによって点線の色を変える場合
+       
+        boolean hit=false;//ガイドラインが台の上の球に重なっているか
         for (; dot<nDots; ++dot) {
+        	//左右の壁にぶつかりそうな場合
             if (nextX < holesX[0]) {
                 nextX = holesX[0] - nextX;
                 nextX = holesX[0] + nextX;
@@ -674,6 +729,7 @@ public class Billard4K extends JPanel implements Runnable, MouseListener, MouseM
                 xStep *= -1;
             }
            
+            //上下の壁にぶつかりそうな場合
             if (nextY < holesY[0]) {
                 nextY = holesY[0]-nextY;
                 nextY = holesY[0]+nextY;
@@ -685,13 +741,27 @@ public class Billard4K extends JPanel implements Runnable, MouseListener, MouseM
                 yStep *=-1;
             }
            
-            gBackBuffer.fillOval((int)nextX-2, (int)nextY-2, 4, 4);
+            hit = (checkhit(nextX-2, nextY-2) || hit);//ガイドラインが球に当たるか
+           
+            if(!hit){
+            	gBackBuffer.fillOval((int)nextX-2, (int)nextY-2, 4, 4);//球にぶつからなければ点線描写
+            }
+            	
             nextX -= xStep;
             nextY -= yStep;
         }
     }
    
-   
+    public boolean checkhit(double lx, double ly){//ガイドラインが狙う玉と重なっているか判定
+    	boolean hit = false;
+    	for (int i=1; i<nballs; ++i) if (onTable[i]) {//台の上にあるすべての球について
+    		if( Math.hypot(x[i]-lx , y[i]-ly) < (int)(r*2.3)){//ガイドラインと球の座標の距離が一定値以下だったら
+    			hit = true;//当たりと判定
+    			break;
+    		}
+    	}
+    	return hit;
+    }
    
     public double strength() {
         //return Math.abs(mYPost-mY);
@@ -735,7 +805,7 @@ public class Billard4K extends JPanel implements Runnable, MouseListener, MouseM
             
             //以下追記
             clicktimes++;
-            System.out.println("clicked");
+            //System.out.println("clicked");
             
         }
        
@@ -744,6 +814,7 @@ public class Billard4K extends JPanel implements Runnable, MouseListener, MouseM
    
     public void mouseClicked(MouseEvent e) {
         if (state == WAITING_TO_START) {
+        	//billiard-shot1.mp3...ショット（球にキューを当てる）
             state = WAITING_TO_HIT;
         }
     }
