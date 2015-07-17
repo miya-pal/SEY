@@ -89,6 +89,7 @@ public class Billard4K extends JPanel implements Runnable, MouseListener, MouseM
     boolean gameover = false;//ゲームオーバー(タイトルに戻る)
     boolean boomessage = false;//ゲームオーバーしたら
     boolean compmessage = false;
+    int indivimes = 0;
     
     //動画関連
     String[] uriString = new String[]{"https://drive.google.com/file/d/0B2qGSJvCoOjhYnNqektMV2lKUjA/view?usp=sharing",
@@ -430,7 +431,7 @@ public class Billard4K extends JPanel implements Runnable, MouseListener, MouseM
                         Desktop desktop = Desktop.getDesktop();
                         //動画にとぶよ〜！                     
                         try {
-                        	if(ball!=0){
+                        	if(ball!=0 && ball!=6 && ball!= 7 && ball!=8){
                             URI uri = new URI(uriString[ball-1]);
                             desktop.browse(uri);
                         	}
@@ -447,6 +448,10 @@ public class Billard4K extends JPanel implements Runnable, MouseListener, MouseM
                             	current++;
                             }
                         }
+                        
+                        if(ball == 6) indivimes = 1;
+                        if(ball == 7) indivimes = 2;
+                        if(ball== 8) indivimes = 3;
                         if(retry){//残機制限ありの場合
                         	if(ball==0){
                         		retrynum--;
@@ -626,7 +631,11 @@ public class Billard4K extends JPanel implements Runnable, MouseListener, MouseM
        
         // STICK
         if (state == WAITING_TO_HIT) drawStick(gBackBuffer);
-       
+        
+        //メッセージ表示
+        if(indivimes == 1)           gBackBuffer.drawString("みやちゃんめっせげっと〜", 400,300 );
+        if(indivimes == 2)           gBackBuffer.drawString("さっちゃんめっせげっと〜", 400,300 );
+        if(indivimes == 3)           gBackBuffer.drawString("えりかめっせげっと〜", 400,300 );
         // Initial message
         if (state == WAITING_TO_START) {            
             int mX = this.getWidth()/2-85;
